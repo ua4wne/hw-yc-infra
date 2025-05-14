@@ -25,7 +25,7 @@ resource "yandex_compute_instance" "nat" {
 
   network_interface {
     subnet_id  = yandex_vpc_subnet.public.id
-    nat        = true
+    nat        = var.vm_nat
     ip_address = "192.168.10.254"
   }
   scheduling_policy {

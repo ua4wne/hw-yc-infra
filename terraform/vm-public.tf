@@ -29,7 +29,7 @@ resource "yandex_compute_instance" "vm-public" {
 
   network_interface {
     subnet_id  = yandex_vpc_subnet.public.id
-    nat        = true
+    nat        = var.vm_nat
   }
   scheduling_policy {
     preemptible = var.vm_preemptible
