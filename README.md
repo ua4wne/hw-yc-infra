@@ -46,9 +46,54 @@ resource "yandex_vpc_network" "vpc-netology" {
 3. Приватная подсеть.
 
     Создать в VPC subnet с названием private, сетью 192.168.20.0/24.
+
+    ```
+    resource "yandex_vpc_subnet" "private" {
+      name           = var.private_subnet
+      zone           = var.default_zone
+      network_id     = yandex_vpc_network.vpc-netology.id
+      v4_cidr_blocks = var.private_cidr
+      route_table_id = yandex_vpc_route_table.private-route.id
+    }
+    
+    ```
+
     Создать route table. Добавить статический маршрут, направляющий весь исходящий трафик private сети в NAT-инстанс.
+
+    ```
+    resource "yandex_vpc_route_table" "private-route" {
+      name       = "private-route"
+      network_id = yandex_vpc_network.vpc-netology.id
+      static_route {
+        destination_prefix = "0.0.0.0/0"
+        next_hop_address   = "192.168.10.254"
+      }
+    }
+
+    ```
 
     ![priv-pub-net](./task1/priv-pub-net.png)
 
     Создать в этой приватной подсети виртуалку с внутренним IP, подключиться к ней через виртуалку, созданную ранее, и убедиться, что есть доступ к интернету.
 
+    > [vm-private.tf](./terraform/vm-private.tf)
+
+    ![deploy-2](./task1/deploy-2.png)
+    ![vm-private](./task1/vm-private.png)
+    ![netmap](./task1/netmap.png)
+
+    >Для проверки доступности интернета на приватной ВМ через NAT-инстанс копируем свой приватный ssh ключ на публичную ВМ. Затем с публичной ВМ подключаемся к приватной по внутреннему IP адресу
+
+  ![ssh-3](./task1/ssh-3.png)
+  ![ssh-4](./task1/ssh-4.png)
+  ![ssh-5](./task1/ssh-5.png)
+
+  >Доступ в интернет есть. Теперь попробуем временно отключить NAT-инстанс и проверить доступность интернета на приватной ВМ.
+
+  ![stop-nat](./task1/stop-nat.png)
+
+  >Как видим, доступ пропал. Для возобновления доступа необходимо обратно включить NAT-инстанс
+
+  ![ssh-6](./task1/ssh-6.png)
+  ![start-nat](./task1/start-nat.png)
+  ![ssh-5](./task1/ssh-5.png)
