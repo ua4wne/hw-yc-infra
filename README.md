@@ -28,6 +28,8 @@ resource "yandex_vpc_network" "vpc-netology" {
 
     > [vpc.tf](./terraform/vpc.tf)  [variables.tf](./terraform/variables.tf)
 
+    ![vpc](./task1/vpc.png)
+
     Создать в этой подсети NAT-инстанс, присвоив ему адрес 192.168.10.254. В качестве image_id использовать fd80mrhj8fl2oe87o4e1.
 
     > [vm-nat.tf](./terraform/vm-nat.tf)
@@ -36,9 +38,17 @@ resource "yandex_vpc_network" "vpc-netology" {
 
     > [vm-public.tf](./terraform/vm-public.tf)
 
+    ![deploy-1](./task1/deploy-1.png)
+    ![nat-public](./task1/nat-public.png)
+    ![ssh-1](./task1/ssh-1.png)
+    ![ssh-2](./task1/ssh-2.png)
+
 3. Приватная подсеть.
 
     Создать в VPC subnet с названием private, сетью 192.168.20.0/24.
     Создать route table. Добавить статический маршрут, направляющий весь исходящий трафик private сети в NAT-инстанс.
+
+    ![priv-pub-net](./task1/priv-pub-net.png)
+
     Создать в этой приватной подсети виртуалку с внутренним IP, подключиться к ней через виртуалку, созданную ранее, и убедиться, что есть доступ к интернету.
 
